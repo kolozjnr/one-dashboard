@@ -1,26 +1,109 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ==========================================================================
+   Bitz frontend — design tokens
+   Ported from the reference Blade app (Laravel/Tailwind v3 utilities).
+   Light-theme values are reference-exact; dark theme is an added feature
+   using a navy-tinted palette derived from the reference's #161c2d panels.
+
+   Tailwind v4 token renames applied when porting reference classes:
+     v3 rounded-sm -> v4 rounded-xs     v3 rounded    -> v4 rounded-sm
+     v3 shadow-sm  -> v4 shadow-xs      v3 shadow     -> v4 shadow-sm
+   Bare v3 `border` (default gray-200) -> `border-line` (v4 defaults to currentColor)
+   ========================================================================== */
+
+/* Dark mode driven by data-theme on <html>, set before first paint */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-figtree), ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", sans-serif;
+
+  /* semantic surfaces */
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-sunken: var(--sunken);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+
+  /* semantic text */
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-ghost: var(--ghost);
+
+  /* chrome */
+  --color-footer: var(--footer);
+  --color-sidebar: var(--sidebar);
+
+  /* brand — fixed across themes (from reference) */
+  --color-brand: #ff5c39;
+  --color-brand-hover: #e04a32;
+  --color-navy: #161c2d;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  color-scheme: light;
+
+  --page: #f3f4f6; /* body.bg-gray-100 (dashboard) */
+  --surface: #ffffff; /* cards / header / auth panel (bg-white) */
+  --sunken: #f3f4f6; /* inputs bg-gray-100, table sub-headers */
+  --line: #e5e7eb; /* border-gray-200 */
+  --line-strong: #d1d5db; /* border-gray-300 */
+  --ink: #111827; /* text-gray-900 */
+  --muted: #4b5563; /* text-gray-600 */
+  --faint: #6b7280; /* text-gray-500 */
+  --ghost: #9ca3af; /* text-gray-400 */
+  --footer: #161c2d; /* footer / CTA banner */
+  --sidebar: #111827; /* sidebar bg-gray-900 */
+
+  --marketing-bg: linear-gradient(to right, #fff9f6, #ffefea);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --page: #0e1322;
+  --surface: #161c2d;
+  --sunken: #0a0e1a;
+  --line: #26304d;
+  --line-strong: #35406a;
+  --ink: #f9fafb;
+  --muted: #d1d5db;
+  --faint: #9ca3af;
+  --ghost: #6b7280;
+  --footer: #0b0f1b;
+  --sidebar: #0a0e1a;
+
+  --marketing-bg: linear-gradient(to right, #0d1220, #131a2e);
+}
+
+@layer base {
+  body {
+    background-color: var(--page);
+    color: var(--ink);
+    font-family: var(--font-figtree), ui-sans-serif, system-ui, -apple-system,
+      "Segoe UI", sans-serif;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Marketing page gradient (reference: body.bg-gradient-to-r
+   from-[#FFF9F6] to-[#FFEFEA]) */
+.marketing-page {
+  background-image: var(--marketing-bg);
+}
+
+/* Ported from dashboard/base.blade.php inline <style> */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-in-out;
 }
