@@ -23,9 +23,9 @@ export function PageHero() {
             Explore the standout features
           </h1>
           <p className="text-lg md:text-xl max-w-2xl mx-auto text-gray-200">
-            Connect all marketing data with our attribution platform to boost
-            ROI by 15-44%. Measure ROI across channels, campaigns, keywords, and
-            creatives.
+            Connect your sources once, then analyze traffic, audiences, and
+            channel performance — and ship reports — all from a single
+            Metrispot dashboard.
           </p>
         </div>
       </div>

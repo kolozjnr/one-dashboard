@@ -5,7 +5,7 @@
  * exactly once.
  */
 
-const FLASH_KEY = "bitz-flash";
+const FLASH_KEY = "metrispot-flash";
 
 export function setFlash(message: string): void {
   try {

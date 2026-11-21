@@ -38,8 +38,8 @@ function useTheme() {
           | "dark") ?? "light",
       );
     sync();
-    window.addEventListener("bitz-theme-change", sync);
-    return () => window.removeEventListener("bitz-theme-change", sync);
+    window.addEventListener("metrispot-theme-change", sync);
+    return () => window.removeEventListener("metrispot-theme-change", sync);
   }, []);
 
   return theme;

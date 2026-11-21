@@ -2,27 +2,32 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { BrandLogo } from "@/components/brand-logo";
 import { ThemeToggle } from "@/components/theme/theme-toggle";
 
 /**
  * Marketing top navigation — ported from base/app.blade.php.
  * The reference toggles #mobile-menu with vanilla JS; here it is React state.
  * Desktop links carry no hover styles in the reference (kept faithful);
- * mobile menu links do (kept faithful). Theme toggle is an added feature.
+ * mobile menu links do (kept faithful).
+ * Layout: theme toggle pinned to the left edge, links in the center,
+ * auth links + Metrispot logo at the far right (hamburger after the logo
+ * on mobile). The theme toggle is an added feature.
  */
 export function MarketingNav() {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <>
-      <nav className="flex justify-between items-center py-4 px-4 md:px-20 max-w-7xl mx-auto">
-        <div>
-          <Link href="/">
-            <h1 className="text-xl font-semibold">Windsor AI</h1>
+      <nav className="flex w-full justify-between items-center py-4 px-4 md:px-20 max-w-7xl mx-auto">
+        {/* Left edge: logo */}
+        <div className="flex items-center">
+          <Link href="/" aria-label="Metrispot home">
+            <BrandLogo className="text-xl font-semibold" />
           </Link>
         </div>
 
-        {/* Desktop links */}
+        {/* Desktop links (center slot) */}
         <div className="hidden md:flex space-x-8">
           <Link href="/feature" className="text-muted text-sm">
             Features
@@ -35,31 +40,37 @@ export function MarketingNav() {
           </Link>
         </div>
 
-        {/* Desktop auth cluster + theme toggle */}
-        <div className="hidden md:flex items-center space-x-4">
+        {/* Right cluster: auth links, then the logo at the far right edge
+            (hamburger after the logo on mobile) */}
+        <div className="flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-4">
+            <Link href="/login" className="text-brand text-sm">
+              Login
+            </Link>
+            <Link
+              href="/register"
+              className="bg-brand text-white px-4 py-2 rounded-md text-sm hover:bg-brand-hover transition duration-200"
+            >
+              Sign Up
+            </Link>
+          </div>
+
+          {/* <Link href="/" aria-label="Metrispot home">
+            <BrandLogo className="text-xl font-semibold" />
+          </Link> */}
+
           <ThemeToggle
-            className="p-1.5 text-muted hover:text-brand"
+            className="p-4.5 text-muted hover:text-brand"
             iconClassName="h-4 w-4"
           />
-          <Link href="/login" className="text-brand text-sm">
-            Login
-          </Link>
-          <Link
-            href="/register"
-            className="bg-brand text-white px-4 py-2 rounded-md text-sm hover:bg-brand-hover transition duration-200"
-          >
-            Sign Up
-          </Link>
-        </div>
 
-        {/* Mobile hamburger */}
-        <div className="md:hidden">
+          {/* Mobile hamburger */}
           <button
             type="button"
             aria-label="Toggle menu"
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((open) => !open)}
-            className="text-muted focus:outline-none"
+            className="md:hidden text-muted focus:outline-none"
           >
             <svg
               className="w-6 h-6"
@@ -118,12 +129,6 @@ export function MarketingNav() {
             >
               Sign Up
             </Link>
-            <div className="flex justify-end pt-2">
-              <ThemeToggle
-                className="p-1.5 text-muted hover:text-brand"
-                iconClassName="h-4 w-4"
-              />
-            </div>
           </div>
         </div>
       )}

@@ -5,6 +5,8 @@ import { useState } from "react";
 import { AuthAlert } from "@/components/auth/auth-alert";
 import { AuthInputField } from "@/components/auth/auth-input-field";
 import { setFlash } from "@/lib/flash";
+import { apiRequest, ApiClientError } from "@/lib/api-client";
+import { SubmitSpinner } from "@/components/auth/submit-spinner";
 
 /**
  * Registration form — ported from user/register.blade.php.
@@ -35,13 +37,13 @@ export function RegisterForm() {
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
       validationErrors.push("The email field must be a valid email address.");
     if (!password) validationErrors.push("The password field is required.");
-    else if (password.length < 8)
-      validationErrors.push("The password field must be at least 8 characters.");
+    else if (password.length < 12)
+      validationErrors.push("The password field must be at least 12 characters.");
     if (!confirmPassword)
       validationErrors.push("The password confirmation field is required.");
-    else if (confirmPassword.length < 8)
+    else if (confirmPassword.length < 12)
       validationErrors.push(
-        "The password confirmation field must be at least 8 characters.",
+        "The password confirmation field must be at least 12 characters.",
       );
     else if (confirmPassword !== password)
       validationErrors.push("The password confirmation does not match.");
@@ -54,31 +56,20 @@ export function RegisterForm() {
     setSubmitting(true);
     setErrors([]);
     try {
-      const response = await fetch("/api/register", {
+      const result = await apiRequest<{ message: string }>("auth/register", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name,
           email,
           password,
-          password_confirmation: confirmPassword,
         }),
       });
-      const data = await response.json().catch(() => null);
-
-      if (response.ok) {
-        // Reference: redirect()->route('user.login')->with('success', $responseData['message'])
-        setFlash(data?.message ?? "Registration successful.");
-        window.location.href = "/login";
-        return;
-      }
+      setFlash(result.message);
+      window.location.href = "/login";
+      return;
+    } catch (error) {
       setErrors([
-        data?.message ??
-          "API registration failed. Please try again.",
-      ]);
-    } catch {
-      setErrors([
-        "An error occurred while communicating with the registration service.",
+        error instanceof ApiClientError ? error.message : "Could not create the account. Please try again.",
       ]);
     } finally {
       setSubmitting(false);
@@ -172,9 +163,10 @@ export function RegisterForm() {
           <button
             type="submit"
             disabled={submitting}
+            aria-busy={submitting}
             className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-70"
           >
-            Create Account
+            <span className="inline-flex items-center justify-center gap-2">{submitting && <SubmitSpinner />}<span>Create Account</span></span>
           </button>
         </form>
 

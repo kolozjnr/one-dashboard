@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { LoginForm } from "./login-form";
 
 export const metadata: Metadata = {
-  title: "Login - BitzMag",
+  title: "Login | Metrispot",
 };
 
 export default function LoginPage() {

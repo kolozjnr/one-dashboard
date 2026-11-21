@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   // Reference quirk kept: user.blade.php sets @section('title', 'Dashboard'),
   // so the tab reads "Dashboard" in the original app too.
-  title: "Dashboard",
+  title: "Dashboard | Metrispot",
 };
 
 /**

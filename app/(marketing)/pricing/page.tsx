@@ -3,9 +3,7 @@ import { PageHero } from "@/components/marketing/page-hero";
 import { PricingPeriodToggle } from "./pricing-period-toggle";
 
 export const metadata: Metadata = {
-  // Reference quirk kept: pricing.blade.php sets @section('title', 'Feature'),
-  // so the tab reads "Feature" in the original app too.
-  title: "Feature",
+  title: "Pricing | Metrispot",
 };
 
 /**

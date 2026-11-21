@@ -1,7 +1,7 @@
 "use client";
 
 import { useAnalytics } from "./analytics-context";
-import { EmptyState, SectionCard, TableSkeleton } from "./states";
+import { DisconnectedState, EmptyState, SectionCard, TableSkeleton } from "./states";
 import {
   Table,
   TableBody,
@@ -24,8 +24,9 @@ function Stat({ label, value }: { label: string; value: string }) {
 
 /**
  * Website analytics for the connected site: audience size, most visited
- * pages, traffic sources and recent activity. Hidden entirely when no
- * website source is selected.
+ * pages, traffic sources and recent activity. When no website source is
+ * selected it renders a disconnected state rather than disappearing, so
+ * the section always explains itself.
  */
 export function WebsiteAnalytics() {
   const { selectedAccounts, range, loading } = useAnalytics();
@@ -39,7 +40,16 @@ export function WebsiteAnalytics() {
   }
 
   const analytics = buildWebsiteAnalytics(selectedAccounts, range);
-  if (!analytics) return null;
+  if (!analytics) {
+    return (
+      <SectionCard
+        title="Website analytics"
+        description="Traffic, pages and sources for the connected site"
+      >
+        <DisconnectedState sourceLabel="Your website" />
+      </SectionCard>
+    );
+  }
 
   const website = selectedAccounts.find((account) => account.platformId === "website");
 

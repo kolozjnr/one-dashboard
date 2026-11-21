@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { RegisterForm } from "./register-form";
 
 export const metadata: Metadata = {
-  title: "Register - BitzMag",
+  title: "Register | Metrispot",
 };
 
 export default function RegisterPage() {

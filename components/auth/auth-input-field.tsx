@@ -56,8 +56,9 @@ export function AuthInputField({
           <button
             type="button"
             aria-label={revealed ? "Hide password" : "Show password"}
+            aria-pressed={revealed}
             onClick={() => setRevealed((value) => !value)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-ghost"
+            className="group absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full text-ghost transition-colors duration-200 hover:bg-brand/10 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -65,7 +66,7 @@ export function AuthInputField({
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-5 h-5"
+              className={`h-5 w-5 transition-transform duration-200 ease-out group-active:scale-90 ${revealed ? "scale-110 text-brand" : "scale-100"}`}
             >
               <path
                 strokeLinecap="round"
@@ -77,6 +78,7 @@ export function AuthInputField({
                 strokeLinejoin="round"
                 d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
               />
+              {!revealed && <path strokeLinecap="round" strokeLinejoin="round" d="M3 3l18 18" className="origin-center animate-in" />}
             </svg>
           </button>
         ) : (

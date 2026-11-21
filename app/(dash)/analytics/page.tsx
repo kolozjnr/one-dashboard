@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { AnalyticsBody } from "./analytics-body";
 
 export const metadata: Metadata = {
-  title: "Website Analytics",
+  title: "Website Analytics | Metrispot",
 };
 
 /**

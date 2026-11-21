@@ -2,6 +2,7 @@ import type {
   ChartMetricId,
   ContentColumn,
   MetricDef,
+  MetricFormat,
   PlatformId,
   UniversalMetricId,
 } from "./types";
@@ -249,6 +250,57 @@ export const METRICS: Record<string, MetricDef> = {
     description: "Total pages viewed on your website.",
   },
 };
+
+/* ------------------------------------------------------------------ generic metrics */
+
+/**
+ * Turns a raw metric id into a readable label: "avgSessionDuration" ->
+ * "Avg Session Duration". Used for metric ids a source reports but the
+ * registry has no entry for, so they are rendered instead of discarded.
+ */
+export function humanizeMetricId(metricId: string): string {
+  const spaced = metricId
+    .replace(/([a-z0-9])([A-Z])/g, "$1 $2")
+    .replace(/[_-]+/g, " ")
+    .trim();
+  if (!spaced) return metricId;
+  return spaced.charAt(0).toUpperCase() + spaced.slice(1);
+}
+
+/** Best-effort format guess for an unregistered metric id. */
+function inferMetricFormat(metricId: string): MetricFormat {
+  const id = metricId.toLowerCase();
+  if (/rate|percent|share|ratio|pct/.test(id)) return "percent";
+  if (/duration|seconds|secs|time|watchtime|age_seconds/.test(id)) return "duration";
+  if (/count|total|number|visitors|sessions|views|clicks|followers|likes|comments/.test(id)) {
+    return "compact";
+  }
+  return "number";
+}
+
+/**
+ * Resolves a metric definition, falling back to a generated one for ids a
+ * source reports but this registry does not model. `registered` tells
+ * callers whether the definition came from METRICS or was inferred.
+ */
+export function metricDefinition(
+  metricId: string,
+): MetricDef & { registered: boolean } {
+  const known = METRICS[metricId];
+  if (known) return { ...known, registered: true };
+  return {
+    id: metricId,
+    label: humanizeMetricId(metricId),
+    format: inferMetricFormat(metricId),
+    description: "Reported by the connected source; details are source-specific.",
+    registered: false,
+  };
+}
+
+/** Does the registry model this metric id explicitly? */
+export function isRegisteredMetric(metricId: string): boolean {
+  return Object.prototype.hasOwnProperty.call(METRICS, metricId);
+}
 
 export const UNIVERSAL_METRIC_ORDER: UniversalMetricId[] = [
   "followers",

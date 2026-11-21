@@ -5,20 +5,19 @@
  * href="#" in the reference, and the CTA is an inert button (kept faithful).
  */
 
+import Link from "next/link";
+import { BrandLogo } from "@/components/brand-logo";
+
 const footerSections: Record<string, string[]> = {
   "Quick Links": ["About Us", "Pricing", "Features", "Blog", "Contact Us"],
-  Integrations: [
-    "Integration 1",
-    "Integration 2",
-    "Integration 3",
-    "Integration 4",
+  Services: [
+    "Website Analytics",
+    "Audience Insights",
+    "Compare Platforms",
+    "Reports",
+    "Performance",
   ],
-  "Dashboard Templates": [
-    "Template 1",
-    "Template 2",
-    "Template 3",
-    "Template 4",
-  ],
+  Data: ["Connect Sources", "Connections", "Integrations", "API Access"],
   Legal: [
     "Terms of Service",
     "Privacy Policy",
@@ -75,22 +74,22 @@ export function MarketingFooter() {
           </div>
           <div className="text-center relative z-10">
             <h2 className="text-3xl font-bold text-white mb-2">
-              Ready to enhance your reach
+              Ready to see all your data
             </h2>
             <h3 className="text-2xl font-bold text-white mb-4">
-              And boost conversions
+              in one place
             </h3>
             <p className="text-gray-400 mb-8">
-              Transform your platform with data-driven insights and
+              Connect your first source in minutes and turn raw metrics
               <br />
-              actionable recommendations.
+              into dashboards, comparisons, and reports.
             </p>
-            <button
-              type="button"
-              className="bg-white text-[#161c2d] px-6 py-2 rounded-full font-medium hover:bg-gray-100 transition"
+            <Link
+              href="/register"
+              className="bg-white text-[#161c2d] px-6 py-2 rounded-full font-medium hover:bg-gray-100 transition inline-block"
             >
               Get Started
-            </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -98,6 +97,16 @@ export function MarketingFooter() {
       {/* Footer Content */}
       <div className="bg-footer pt-32 pb-12 px-6">
         <div className="max-w-6xl mx-auto">
+          {/* Brand block — logo slots for dark/light artwork (the footer band
+              is dark in both themes, so the dark-mode logo is pinned). */}
+          <div className="mb-10">
+            <BrandLogo variant="dark" className="text-2xl font-bold text-white" />
+            <p className="mt-4 text-gray-400 text-sm max-w-md">
+              Metrispot brings every data source — your website, social
+              channels, and ad platforms — into one analytics dashboard.
+            </p>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
             {Object.entries(footerSections).map(([title, links]) => (
               <div key={title}>

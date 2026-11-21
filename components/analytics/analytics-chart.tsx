@@ -20,7 +20,7 @@ import { EmptyState, SectionCard } from "./states";
 import { defaultInterval } from "@/lib/analytics/date-ranges";
 import { formatCompact, formatMetricValue } from "@/lib/analytics/format";
 import { buildChartSeries } from "@/lib/analytics/mock-data";
-import { METRICS, chartMetricsFor } from "@/lib/analytics/registry";
+import { chartMetricsFor, metricDefinition } from "@/lib/analytics/registry";
 import type { AccountSeries, ChartMetricId, ChartType, Interval, MetricFormat } from "@/lib/analytics/types";
 import { Dropdown } from "@/components/ui/dropdown";
 import { cn } from "@/lib/utils";
@@ -144,7 +144,7 @@ export function AnalyticsChart() {
     );
   }
 
-  const definition = activeMetric ? METRICS[activeMetric] : null;
+  const definition = activeMetric ? metricDefinition(activeMetric) : null;
   const format: MetricFormat = definition?.format ?? "number";
   const axisFormatter = (value: number) =>
     format === "percent" ? `${Math.round(value)}%` : formatCompact(value);
@@ -186,7 +186,7 @@ export function AnalyticsChart() {
             {metricMenuOpen && (
               <ul className="max-h-72 overflow-y-auto py-1">
                 {available.map((id) => {
-                  const option = METRICS[id];
+                  const option = metricDefinition(id);
                   const active = id === activeMetric;
                   return (
                     <li key={id}>

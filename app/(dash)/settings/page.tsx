@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   // Reference quirk kept: settings.blade.php sets @section('title', 'Dashboard'),
   // so the tab reads "Dashboard" in the original app too.
-  title: "Dashboard",
+  title: "Dashboard | Metrispot",
 };
 
 /**
@@ -85,7 +85,7 @@ export default function SettingsPage() {
             <div>
               <div className="text-sm font-medium text-ink">Connected accounts</div>
               <div className="text-sm text-faint">
-                Integrations connected to your Frame account
+                Integrations connected to your Metrispot account
               </div>
             </div>
           </div>
@@ -188,7 +188,7 @@ export default function SettingsPage() {
             </div>
             <div>
               <div className="text-sm font-medium text-ink">Close your account</div>
-              <div className="text-sm text-faint">If you want to stop using FrameAI</div>
+              <div className="text-sm text-faint">If you want to stop using Metrispot</div>
             </div>
           </div>
           <svg className="w-5 h-5 text-ghost" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { AuthAlert } from "@/components/auth/auth-alert";
 import { AuthInputField } from "@/components/auth/auth-input-field";
+import { apiRequest, ApiClientError } from "@/lib/api-client";
+import { SubmitSpinner } from "@/components/auth/submit-spinner";
 
 /**
  * Forgot-password form — ported from user/forgot-password.blade.php.
@@ -15,8 +17,10 @@ import { AuthInputField } from "@/components/auth/auth-input-field";
 export function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
   const [errors, setErrors] = useState<string[]>([]);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     const validationErrors: string[] = [];
@@ -25,7 +29,20 @@ export function ForgotPasswordForm() {
       validationErrors.push("The email field must be a valid email address.");
 
     setErrors(validationErrors);
-    // No endpoint exists in the reference (form action="#") — no further action.
+    setSuccess(null);
+    if (validationErrors.length) return;
+    setSubmitting(true);
+    try {
+      const result = await apiRequest<{ message: string }>("auth/forgot-password", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+      });
+      setSuccess(result.message);
+    } catch (error) {
+      setErrors([error instanceof ApiClientError ? error.message : "Could not submit the request. Please try again."]);
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -41,6 +58,7 @@ export function ForgotPasswordForm() {
         {/* Server feedback to the user */}
         <AuthAlert
           errors={errors}
+          success={success}
           wrapperClassName="space-y-4 max-w-2xl mx-auto p-4"
         />
 
@@ -60,13 +78,15 @@ export function ForgotPasswordForm() {
           {/* Submit Button (label verbatim from the reference) */}
           <button
             type="submit"
+            disabled={submitting}
+            aria-busy={submitting}
             className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
           >
-            Log Into Account
+            <span className="inline-flex items-center justify-center gap-2">{submitting && <SubmitSpinner />}<span>Send Reset Link</span></span>
           </button>
           <div className="flex justify-center">
             <small className="text-orange-500 text-center">
-              Check your E-mail for a password reset link
+              If the account exists, reset instructions will be sent to your email.
             </small>
           </div>
         </form>

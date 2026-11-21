@@ -2,9 +2,7 @@ import type { Metadata } from "next";
 import { ContactForm } from "./contact-form";
 
 export const metadata: Metadata = {
-  // Reference quirk kept: contact.blade.php sets @section('title', 'Feature'),
-  // so the tab reads "Feature" in the original app too.
-  title: "Feature",
+  title: "Contact | Metrispot",
 };
 
 const checkPath = "M5 13l4 4L19 7";
@@ -62,7 +60,7 @@ export default function ContactPage() {
               {/* Feature Box */}
               <div className="bg-[#161B22] rounded-lg p-6 space-y-4">
                 <h3 className="text-xl font-semibold flex items-center gap-2">
-                  Do more with BitMag <span className="text-orange-500">🚀</span>
+                  Do more with Metrispot <span className="text-orange-500">🚀</span>
                 </h3>
                 <ul className="space-y-3">
                   <li className="flex items-center gap-2">

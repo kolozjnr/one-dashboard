@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PageHero } from "@/components/marketing/page-hero";
 
 export const metadata: Metadata = {
-  title: "Feature",
+  title: "Features | Metrispot",
 };
 
 /**

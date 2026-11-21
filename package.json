@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.2.1",
     "apexcharts": "^8.8.1",
     "chart.js": "^4.6.1",
     "class-variance-authority": "^0.7.1",

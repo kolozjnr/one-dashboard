@@ -19,11 +19,11 @@ export function ThemeToggle({
       root.getAttribute("data-theme") === "dark" ? "light" : "dark";
     root.setAttribute("data-theme", next);
     try {
-      localStorage.setItem("bitz-theme", next);
+      localStorage.setItem("metrispot-theme", next);
     } catch {
       /* storage unavailable — keep in-memory theme */
     }
-    window.dispatchEvent(new CustomEvent("bitz-theme-change", { detail: next }));
+    window.dispatchEvent(new CustomEvent("metrispot-theme-change", { detail: next }));
   };
 
   return (

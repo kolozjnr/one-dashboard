@@ -5,7 +5,7 @@ import DataSourcePanel from "./data-source-panel";
 export const metadata: Metadata = {
   // Reference quirk kept: source.blade.php sets @section('title', 'Dashboard'),
   // so the tab reads "Dashboard" in the original app too.
-  title: "Dashboard",
+  title: "Dashboard | Metrispot",
 };
 
 /**

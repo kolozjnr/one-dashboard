@@ -3,10 +3,11 @@ import type { Metadata } from "next";
 
 import { DashboardBody } from "./dashboard-body";
 import { AnalyticsProvider } from "@/components/analytics/analytics-context";
+import { DashboardCustomizer } from "@/components/analytics/dashboard-customizer";
 import { ChartSkeleton, MetricGridSkeleton } from "@/components/analytics/states";
 
 export const metadata: Metadata = {
-  title: "Dashboard",
+  title: "Dashboard | Metrispot",
 };
 
 /**
@@ -21,9 +22,9 @@ export default function DashboardPage() {
     <div className="bg-gray-50 dark:bg-transparent">
       <div className="container mx-auto px-4 py-8 w-full">
         {/* Header */}
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <div className="flex gap-4">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3">
+          <h1 data-tour="dashboard-title" className="text-2xl font-bold">Dashboard</h1>
+          <div data-tour="dashboard-actions" className="flex flex-wrap gap-2 sm:gap-4">
             {/* Buttons are inert in the reference */}
             <button
               type="button"
@@ -55,6 +56,7 @@ export default function DashboardPage() {
               </svg>
               Export
             </button>
+            <DashboardCustomizer />
             <button
               type="button"
               className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600"

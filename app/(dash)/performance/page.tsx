@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { ApexChart } from "./performance-charts";
 
 export const metadata: Metadata = {
-  title: "Dashboard",
+  title: "Dashboard | Metrispot",
 };
 
 const subscriberLegend = [

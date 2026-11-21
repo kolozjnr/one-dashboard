@@ -13,7 +13,7 @@ export function FilterToolbar() {
   const { selectedIds, accounts, loading } = useAnalytics();
 
   return (
-    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+    <div data-tour="dashboard-filters" className="mb-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
       <div className="flex flex-wrap items-center gap-2">
         <ConnectedAppsDropdown />
         <DateRangeFilter />

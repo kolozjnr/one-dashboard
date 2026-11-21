@@ -124,7 +124,7 @@ export function PagesTab({ website }: { website: Website }) {
               onChange={(event) => setQuery(event.target.value)}
               placeholder="Search pages…"
               aria-label="Search pages"
-              className="w-56 rounded-md border border-line bg-surface py-1.5 pl-8 pr-3 text-sm text-ink placeholder:text-ghost focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/40"
+              className="w-full rounded-md border border-line bg-surface py-1.5 pl-8 pr-3 text-sm text-ink placeholder:text-ghost focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/40 sm:w-56"
             />
           </div>
         </header>

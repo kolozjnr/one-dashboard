@@ -6,32 +6,33 @@ import { useState } from "react";
  * FAQ accordion — ported from the Alpine.js block in welcome.blade.php
  * (`x-data="{ active: 1 }"`): the first item starts open, clicking a
  * question toggles it and rotates the chevron 180°.
+ * Copy rewritten for Metrispot's services.
  */
 
 const faqs = [
   {
     id: 1,
-    question: "What is Windsor AI?",
+    question: "What is Metrispot?",
     answer:
-      "Lorem ipsum dolor sit amet consectetur. Purus sollicitudin pharetra et mauris. Egestas viverra in ut sodales eget nunc. Vitae vel ultrices purus dolor purus vivamus aliquam massa. Ut nam nulla vitae.",
+      "Metrispot is a unified analytics platform. Connect your website, social, and advertising accounts once, and every metric lands in a single dashboard — website analytics, audience insights, cross-platform comparisons, and shareable reports, all in one place.",
   },
   {
     id: 2,
-    question: "What is Windsor AI?",
+    question: "Which data sources can I connect?",
     answer:
-      "Lorem ipsum dolor sit amet consectetur. Purus sollicitudin pharetra et mauris. Egestas viverra in ut sodales eget nunc.",
+      "More than 40 sources out of the box, including websites, Instagram, Facebook, X, LinkedIn, TikTok, YouTube, Slack, Shopify, WordPress, Amazon, and Reddit. Anything else can be pushed in through our API or webhooks.",
   },
   {
     id: 3,
-    question: "What is Windsor AI?",
+    question: "Do I need to install any code?",
     answer:
-      "Lorem ipsum dolor sit amet consectetur. Purus sollicitudin pharetra et mauris. Egestas viverra in ut sodales eget nunc.",
+      "For websites, add a single lightweight tracking snippet (or use your existing tag manager). For social, ad, and commerce platforms you simply sign in through the secure OAuth prompt — Metrispot handles the sync and backfills your history automatically.",
   },
   {
     id: 4,
-    question: "What is Windsor AI?",
+    question: "How does the free trial work?",
     answer:
-      "Lorem ipsum dolor sit amet consectetur. Purus sollicitudin pharetra et mauris. Egestas viverra in ut sodales eget nunc.",
+      "Start on the Try Free plan with no credit card required. Connect a source, explore the dashboard, and upgrade whenever you need more data sources, scheduled refreshes, or PDF report exports — your data carries over.",
   },
 ];
 

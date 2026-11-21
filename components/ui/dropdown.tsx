@@ -66,7 +66,7 @@ export function Dropdown({
       {triggerElement}
       <div
         className={cn(
-          "absolute z-40 mt-2 min-w-[17rem] overflow-hidden rounded-lg border border-line bg-surface shadow-xl transition-all duration-150",
+          "absolute z-40 mt-2 min-w-[17rem] max-w-[calc(100vw-2rem)] overflow-hidden rounded-lg border border-line bg-surface shadow-xl transition-all duration-150",
           align === "end" ? "right-0" : "left-0",
           open
             ? "pointer-events-auto visible opacity-100"

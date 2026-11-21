@@ -94,7 +94,7 @@ export function VisitorsTab({ website }: { website: Website }) {
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search visitor, country, source…"
             aria-label="Search visitors"
-            className="w-64 rounded-md border border-line bg-surface px-3 py-1.5 text-sm text-ink placeholder:text-ghost focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/40"
+            className="w-full max-w-full rounded-md border border-line bg-surface px-3 py-1.5 text-sm text-ink placeholder:text-ghost focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand/40 sm:w-64"
           />
         </header>
 

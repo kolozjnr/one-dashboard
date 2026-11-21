@@ -1,6 +1,6 @@
 import { eachDay, previousRange } from "./date-ranges";
 import { formatDayLabel, formatMonthLabel } from "./format";
-import { METRICS, PLATFORMS, supportsMetric } from "./registry";
+import { METRICS, PLATFORMS, metricDefinition, supportsMetric } from "./registry";
 import type {
   AccountSeries,
   ConnectedAccount,
@@ -233,6 +233,21 @@ function aggregate(values: number[], how: Aggregation): number {
   return values.reduce((sum, v) => sum + v, 0);
 }
 
+/** Deterministic fallback baseline for metric ids the model does not know. */
+function genericBase(platformId: PlatformId, metricId: string): number {
+  const r = rand(`generic|${platformId}|${metricId}`);
+  switch (metricDefinition(metricId).format) {
+    case "percent":
+      return 8 + r() * 44;
+    case "duration":
+      return 25 + r() * 260;
+    case "decimal":
+      return 1 + r() * 8;
+    default:
+      return 400 + r() * 5_200;
+  }
+}
+
 /** Daily series for one account. Rates ignore the account weight. */
 function dailySeries(
   account: ConnectedAccount,
@@ -240,8 +255,9 @@ function dailySeries(
   days: Date[],
   periodOffset: 0 | 1,
 ): number[] {
-  const base = BASE[account.platformId][metricId];
-  if (base === undefined) return days.map(() => 0);
+  // Unknown-but-valid metrics still get a stable, plausible series so the
+  // generic renderer can draw them instead of dropping the card.
+  const base = BASE[account.platformId][metricId] ?? genericBase(account.platformId, metricId);
 
   const how = aggregationOf(metricId);
   const scale = how === "avg" ? 1 : account.weight;
@@ -337,8 +353,9 @@ export function computeMetric(
   accounts: ConnectedAccount[],
   range: DateRange,
 ): MetricResult | null {
-  const def = METRICS[metricId];
-  if (!def) return null;
+  // Unregistered metric ids resolve through the generic fallback rather
+  // than being discarded — `supportsMetric` still gates on the platform.
+  const def = metricDefinition(metricId);
 
   const supporting = accounts.filter((account) =>
     supportsMetric(account.platformId, metricId),

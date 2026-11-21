@@ -55,7 +55,7 @@
   --faint: #6b7280; /* text-gray-500 */
   --ghost: #9ca3af; /* text-gray-400 */
   --footer: #161c2d; /* footer / CTA banner */
-  --sidebar: #111827; /* sidebar bg-gray-900 */
+  --sidebar: #ffffff; /* sidebar follows the light theme (bordered against the page) */
 
   --marketing-bg: linear-gradient(to right, #fff9f6, #ffefea);
 }

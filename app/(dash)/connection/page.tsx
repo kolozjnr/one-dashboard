@@ -5,7 +5,7 @@ import ConnectionTabs from "./connection-tabs";
 export const metadata: Metadata = {
   // Reference quirk kept: connection.blade.php sets @section('title', 'Dashboard'),
   // so the tab reads "Dashboard" in the original app too.
-  title: "Dashboard",
+  title: "Dashboard | Metrispot",
 };
 
 /**

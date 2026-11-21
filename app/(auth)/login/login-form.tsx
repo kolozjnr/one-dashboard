@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AuthAlert } from "@/components/auth/auth-alert";
 import { AuthInputField } from "@/components/auth/auth-input-field";
 import { consumeFlash } from "@/lib/flash";
-import { setToken } from "@/lib/auth";
+import { apiRequest, ApiClientError } from "@/lib/api-client";
+import { SubmitSpinner } from "@/components/auth/submit-spinner";
 
 /**
  * Login form — ported from user/login.blade.php.
@@ -20,11 +21,17 @@ export function LoginForm() {
   const [success, setSuccess] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  // One-shot read of a sessionStorage flash that only exists in the browser
+  // (set before the full-page redirect from register/logout). Reading it
+  // during render would mismatch the server HTML, so the mount effect is the
+  // correct place. The ref guard makes the read idempotent: React Strict
+  // Mode (on by default with the app router) runs this effect twice in dev,
+  // and without the guard the second run would consume nothing and clear the
+  // message the first run displayed.
+  const flashRead = useRef(false);
   useEffect(() => {
-    // One-shot read of a sessionStorage flash that only exists in the browser
-    // (set before the full-page redirect from register/logout). Reading it
-    // during render would mismatch the server HTML, so the mount effect is the
-    // correct place; the single extra render it causes is intentional.
+    if (flashRead.current) return;
+    flashRead.current = true;
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setSuccess(consumeFlash());
   }, []);
@@ -51,37 +58,15 @@ export function LoginForm() {
     setErrors([]);
     setSuccess(null);
     try {
-      const response = await fetch("/api/login", {
+      await apiRequest<{ user: { id: string } }>("auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-      const data = await response.json().catch(() => null);
-
-      if (response.ok) {
-        const token = data?.data?.authorization?.token;
-        if (!token) {
-          setErrors([data?.message ?? "Login failed. Please try again."]);
-        } else {
-          setToken(token);
-          try {
-            if (data?.data?.user) {
-              localStorage.setItem("user", JSON.stringify(data.data.user));
-            }
-          } catch {
-            /* storage unavailable */
-          }
-          window.location.href = "/dashboard";
-          return;
-        }
-      } else {
-        setErrors([
-          data?.message ?? "An error occurred while communicating with the login service.",
-        ]);
-      }
-    } catch {
+      window.location.href = "/dashboard";
+      return;
+    } catch (error) {
       setErrors([
-        "An error occurred while communicating with the login service.",
+        error instanceof ApiClientError ? error.message : "Could not sign in. Please try again.",
       ]);
     } finally {
       setSubmitting(false);
@@ -150,9 +135,10 @@ export function LoginForm() {
           <button
             type="submit"
             disabled={submitting}
+            aria-busy={submitting}
             className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-xs text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-70"
           >
-            Log Into Account
+            <span className="inline-flex items-center justify-center gap-2">{submitting && <SubmitSpinner />}<span>Log Into Account</span></span>
           </button>
         </form>
 

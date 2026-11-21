@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { FaqAccordion } from "./faq-accordion";
 
 export const metadata: Metadata = {
-  title: "Home | BitzMag",
+  title: "Home | Metrispot",
 };
 
 const plans = [
@@ -37,38 +38,39 @@ const planFeatures = [
   "1 data source",
   "1 account",
   "5 GB destination",
-  "No GB destination backup/m",
   "Daily DB refresh",
+  "Standard reports",
 ];
 
 const testimonials = [
   {
-    text: "The capability of being able to customize the dashboard and present data in ways we requested it to be. Also, we are able to see attributes of what content drives.",
-    name: "Marvel",
-    position: "Social Media Manager",
+    text: "We connected our website, Instagram, and ad accounts in an afternoon. The Compare view alone saved our team the weekly spreadsheet ritual — every platform side by side, same date range.",
+    name: "Amara Okafor",
+    position: "Head of Growth, Lumen Retail",
+    initials: "AO",
   },
   {
-    text: "The capability of being able to customize the dashboard and present data in ways we requested it to be. Also, we are able to see attributes of what content drives.",
-    name: "Marvel",
-    position: "Social Media Manager",
+    text: "Audience Insights shows us which sources actually bring engaged readers, not just clicks. We moved budget based on it and cost per acquisition dropped within a month.",
+    name: "Daniel Reyes",
+    position: "Marketing Lead, Northwind Studio",
+    initials: "DR",
   },
   {
-    text: "The capability of being able to customize the dashboard and present data in ways we requested it to be. Also, we are able to see attributes of what content drives.",
-    name: "Marvel",
-    position: "Social Media Manager",
+    text: "Reports go straight to the stakeholders who need them — executive summary, key metrics, charts, tables. What used to take a Monday morning now takes one click.",
+    name: "Priya Nair",
+    position: "Analytics Manager, Cove Media",
+    initials: "PN",
   },
 ];
 
 /**
- * Home page — ported from welcome.blade.php (the reference's `/` route).
- * The Blade file's commented-out alternative hero is not rendered there and
- * is not ported. Reference quirks kept: inert CTA buttons, the "Learn More"
- * / "Try Demo" dead links, and the pricing toggle being purely decorative.
- * Reference defects repaired (documented): `illustrations.png` case mismatch
- * (file is Illustrations.png), missing testimonial avatars (rendered as the
- * gray circle only, no broken image), and the invalid `h-18` bar class in
- * the reference's Tailwind v3 CDN (that bar renders with zero height there —
- * reproduced here by omitting the height).
+ * Home page for Metrispot.
+ * Structure kept from the original port (hero + floating stat cards, stats
+ * row, feature cards, ROI split, integrations, pricing, testimonials, FAQ);
+ * all copy rewritten to describe the dashboard's actual services:
+ * data sources/connections, website analytics, audience insights,
+ * compare, reports, and performance.
+ * CTA buttons are wired to real routes (/register, /feature, /pricing).
  */
 export default function HomePage() {
   return (
@@ -86,40 +88,48 @@ export default function HomePage() {
 
           {/* Hero Headline - Adjusted for mobile readability */}
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#2D2F6D] dark:text-white leading-tight">
-            Connecting all your <span className="text-[#FF5C39]">data</span>{" "}
-            from any
-            <br className="hidden md:block" /> tool to{" "}
-            <span className="text-[#FF5C39]">anywhere</span>
+            Every source you use, one{" "}
+            <span className="text-[#FF5C39]">dashboard</span>
+            <br className="hidden md:block" /> you{" "}
+            <span className="text-[#FF5C39]">control</span>
           </h1>
 
           {/* Subheadline - Responsive width and padding */}
           <p className="mt-4 md:mt-6 text-faint max-w-xl lg:max-w-2xl mx-auto text-base md:text-lg px-4">
-            Seamlessly integrate and unify your data from any platform, device,
-            or tool. Easily connect and sync your data anywhere for a
-            streamlined, efficient workflow.
+            Metrispot connects your website, social, and advertising data in
+            one place — then turns it into analytics, audience insights,
+            cross-platform comparisons, and reports your whole team can read.
           </p>
 
-          {/* Call to Action Button - Responsive sizing (inert in the reference) */}
-          <button
-            type="button"
-            className="mt-6 md:mt-8 bg-[#FF5C39] text-white px-4 md:px-6 py-2 md:py-3 rounded-md inline-flex items-center"
-          >
-            Start Free Trial
-            <svg
-              className="ml-2 w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
+          {/* Call to Action Buttons */}
+          <div className="mt-6 md:mt-8 flex flex-wrap items-center justify-center gap-4">
+            <Link
+              href="/register"
+              className="bg-[#FF5C39] text-white px-4 md:px-6 py-2 md:py-3 rounded-md inline-flex items-center hover:bg-brand-hover transition duration-200"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </button>
+              Start Free Trial
+              <svg
+                className="ml-2 w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </Link>
+            <Link
+              href="/feature"
+              className="px-4 md:px-6 py-2 md:py-3 rounded-md inline-flex items-center border border-line-strong text-gray-700 dark:text-gray-300 hover:bg-surface transition duration-200"
+            >
+              Explore Features
+            </Link>
+          </div>
 
           {/* Stats Section - Responsive Layout */}
           <div className="mt-12 md:mt-20 flex flex-col md:flex-row justify-center md:space-x-8 items-center md:items-start">
@@ -138,7 +148,7 @@ export default function HomePage() {
 
             {/* Cards Container - Responsive Flex and Wrapping */}
             <div className="flex flex-wrap justify-center gap-4 md:gap-8 mt-6 md:mt-0">
-              {/* Likes Card */}
+              {/* Engagement Card */}
               <div className="bg-surface p-6 rounded-2xl shadow-xs w-64">
                 <div className="flex items-center space-x-3 py-12">
                   <div className="w-10 h-10 bg-red-100 dark:bg-red-500/15 rounded-full flex items-center justify-center">
@@ -160,9 +170,9 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Followers Stats Card */}
+              {/* Traffic Stats Card */}
               <div className="bg-surface p-6 rounded-2xl shadow-xs w-64">
-                <p className="text-faint mb-4 text-sm">Followers Stats</p>
+                <p className="text-faint mb-4 text-sm">Sessions by Day</p>
                 <div className="h-32 flex items-end space-x-2">
                   <div className="w-6 h-20 bg-[#FF5C39] rounded-t-md"></div>
                   <div className="w-6 h-24 bg-[#FF5C39] rounded-t-md"></div>
@@ -217,7 +227,7 @@ export default function HomePage() {
         {/* Features Stats Section */}
         <section className="mt-16 md:mt-32 rounded-2xl">
           <div className="flex flex-col md:flex-row pb-12 justify-between p-4 max-w-6xl mx-auto gap-6">
-            {/* Active Users Stat */}
+            {/* Connected Sources Stat */}
             <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
               <div className="w-12 h-12 bg-purple-50 dark:bg-purple-500/15 rounded-xl flex items-center justify-center">
                 <svg
@@ -227,18 +237,18 @@ export default function HomePage() {
                   aria-hidden="true"
                 >
                   <path
-                    d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
                     fill="currentColor"
                   />
                 </svg>
               </div>
               <div>
-                <h3 className="text-2xl font-bold">15k+</h3>
-                <p className="text-faint text-sm">Active user</p>
+                <h3 className="text-2xl font-bold">40+</h3>
+                <p className="text-faint text-sm">Ready-made sources</p>
               </div>
             </div>
 
-            {/* Total Integrations Stat */}
+            {/* Sync Frequency Stat */}
             <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
               <div className="w-12 h-12 bg-yellow-50 dark:bg-yellow-500/15 rounded-xl flex items-center justify-center">
                 <svg
@@ -248,18 +258,18 @@ export default function HomePage() {
                   aria-hidden="true"
                 >
                   <path
-                    d="M19 9H15V3H9V9H5L12 16L19 9ZM5 18V20H19V18H5Z"
+                    d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
                     fill="currentColor"
                   />
                 </svg>
               </div>
               <div>
-                <h3 className="text-2xl font-bold">30k</h3>
-                <p className="text-faint text-sm">Total Integrations</p>
+                <h3 className="text-2xl font-bold">Daily</h3>
+                <p className="text-faint text-sm">Automatic data refresh</p>
               </div>
             </div>
 
-            {/* Customer Stat */}
+            {/* Report Export Stat */}
             <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
               <div className="w-12 h-12 bg-green-50 dark:bg-green-500/15 rounded-xl flex items-center justify-center">
                 <svg
@@ -269,14 +279,14 @@ export default function HomePage() {
                   aria-hidden="true"
                 >
                   <path
-                    d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                     fill="currentColor"
                   />
                 </svg>
               </div>
               <div>
-                <h3 className="text-2xl font-bold">10k</h3>
-                <p className="text-faint text-sm">Customer</p>
+                <h3 className="text-2xl font-bold">1-click</h3>
+                <p className="text-faint text-sm">Report generation & export</p>
               </div>
             </div>
           </div>
@@ -284,18 +294,19 @@ export default function HomePage() {
           {/* Features Content */}
           <div className="px-4 md:px-8 pb-8 md:pb-16">
             <h2 className="text-2xl md:text-3xl font-bold text-[#2D2F6D] dark:text-white mb-4">
-              Windsor Amazing Features
+              One platform, every analytics service
             </h2>
             <p className="text-muted max-w-3xl mb-6">
-              Connect all marketing data with our attribution platform to boost
-              ROI by 15-44%. Measure ROI across channels, campaigns, keywords,
-              and creatives, including cancellations, returns, and offline
-              conversions.
+              Connect data sources once and Metrispot keeps them in sync — then
+              measure it all from the same place. Website analytics, audience
+              insights, platform comparisons, scheduled reports, and paid
+              channel performance, sharing one date range and one set of
+              sources.
             </p>
             {/* Learn More Button */}
             <div className="flex justify-end mb-8">
-              <a
-                href="#"
+              <Link
+                href="/feature"
                 className="inline-flex items-center px-4 py-2 text-sm text-red-500 border border-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 transition-colors"
               >
                 Learn More
@@ -313,12 +324,12 @@ export default function HomePage() {
                     d="M17 8l4 4m0 0l-4 4m4-4H3"
                   />
                 </svg>
-              </a>
+              </Link>
             </div>
 
             {/* Feature Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 mt-8">
-              {/* Save time and automate Card */}
+              {/* Connect sources Card */}
               <div className="bg-surface p-6 md:p-8 rounded-2xl shadow-xs w-full">
                 <img
                   src="/images/save-time.png"
@@ -326,17 +337,17 @@ export default function HomePage() {
                   className="w-full h-auto mb-6 rounded-lg"
                 />
                 <h3 className="text-xl font-semibold mb-3">
-                  Save time and automate
+                  Connect your sources, skip the spreadsheets
                 </h3>
                 <p className="text-muted">
-                  Automate the collection of all marketing data and reduce time
-                  spent on preparation. Focus on insights with our advanced
-                  marketing attribution software. Easily use and integrate your
-                  data anywhere with our connectors and APIs.
+                  Add a website snippet or sign in through OAuth to pull in
+                  social, ad, and commerce data — then let Metrispot handle the
+                  syncs. No CSV exports, no manual stitching, and no scripts to
+                  maintain. Anything unusual can go in through our API.
                 </p>
               </div>
 
-              {/* Multi-touch Attribution Card */}
+              {/* Website Analytics Card */}
               <div className="bg-surface p-6 md:p-8 rounded-2xl shadow-xs w-full">
                 <div className="flex flex-col md:flex-row gap-4 mb-6">
                   <img
@@ -351,12 +362,13 @@ export default function HomePage() {
                   />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">
-                  Multi-touch Attribution Modelling Software
+                  Website Analytics, down to the page
                 </h3>
                 <p className="text-muted">
-                  Analyze and optimize customer journeys across all touchpoints.
-                  Our attribution software and budget optimizer saves time by
-                  sending optimizations directly to platforms.
+                  Track sessions, traffic sources, top pages, events, devices,
+                  and conversions across every tab of the analytics module —
+                  with realtime monitoring and a visitor journey view when you
+                  need to see what happened just now.
                 </p>
               </div>
             </div>
@@ -380,63 +392,63 @@ export default function HomePage() {
             {/* Right Section with ROI Information */}
             <div className="flex-1 p-6">
               <div className="inline-block px-4 py-1 bg-[#FFF5F5] dark:bg-red-500/10 text-red-500 rounded-full mb-4">
-                Attribution Insights
+                Compare &amp; Reports
               </div>
 
               <h2 className="text-2xl font-bold mb-6">
-                Optimize ROI by looking at the whole customer journey
+                Answer &quot;which channel is working?&quot; in one screen
               </h2>
 
-              {/* Cross Device Stats (reference repeats the same string ×3) */}
+              {/* Service bullet points */}
               <div className="space-y-4">
-                {["Criteo, Tapad etc.", "Criteo, Tapad etc.", "Criteo, Tapad etc."].map(
-                  (stat, index) => (
-                    <div key={index} className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-red-100 dark:bg-red-500/15 rounded-full flex items-center justify-center text-red-500">
-                        <span>28</span>
-                      </div>
-                      <span className="text-muted">
-                        Cross-device data, eg {stat}
-                      </span>
+                {[
+                  "Compare platforms or date ranges side by side",
+                  "Audience insights by source, geo, and activity time",
+                  "Executive summary, charts, and tables in every report",
+                ].map((stat, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <div className="w-8 h-8 bg-red-100 dark:bg-red-500/15 rounded-full flex items-center justify-center text-red-500 text-sm font-semibold">
+                      {index + 1}
                     </div>
-                  ),
-                )}
+                    <span className="text-muted">{stat}</span>
+                  </div>
+                ))}
               </div>
 
               {/* Description Text */}
               <p className="text-muted mt-6 mb-8">
-                Attribution insights empowers advertisers and marketers to make
-                data-driven decisions on marketing budget allocations across the
-                entire customer journey. Customer journey data is matched to
-                cost-data, this together with multi-touch
+                Every module shares the same connected sources and date
+                filters, so comparisons, audience segments, and reports all
+                read from one version of the truth. Change the range once and
+                the whole dashboard follows.
               </p>
 
-              {/* Demo Button (inert in the reference) */}
-              <button
-                type="button"
-                className="px-6 py-2 border border-red-500 text-red-500 rounded-full hover:bg-red-50 dark:hover:bg-red-500/10 transition"
+              <Link
+                href="/register"
+                className="inline-block px-6 py-2 border border-red-500 text-red-500 rounded-full hover:bg-red-50 dark:hover:bg-red-500/10 transition"
               >
                 Try Demo
-              </button>
+              </Link>
             </div>
           </div>
         </section>
 
-        {/* Integrations Section */}
+        {/* Services Section (structure kept from the original integrations block) */}
         <section className="max-w-6xl mx-auto">
           <div className="bg-pink-50 dark:bg-pink-500/10 p-8 w-full">
             {/* Header Section */}
             <div className="mb-8">
-              <h2 className="text-2xl font-semibold mb-2">Integrations</h2>
+              <h2 className="text-2xl font-semibold mb-2">
+                Everything inside Metrispot
+              </h2>
               <p className="text-muted text-sm">
-                Connect all marketing data with our attribution platform to
-                boost ROI by 15-44%. Measure ROI across channels, campaigns,
-                keywords and creatives, including cancellations, returns, and
-                offline conversions.
+                Each service plugs into the sources you have already connected,
+                so you can move from a raw number to a shareable answer without
+                leaving the dashboard.
               </p>
             </div>
 
-            {/* Feature Cards */}
+            {/* Service Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
               <div className="bg-surface p-8 rounded-2xl shadow-xs">
                 <img
@@ -445,13 +457,13 @@ export default function HomePage() {
                   className="w-full mb-6 rounded-lg"
                 />
                 <h3 className="text-xl font-semibold mb-3">
-                  Connect to entire slack
+                  Sources &amp; Connections
                 </h3>
                 <p className="text-muted">
-                  Automate the collection of all marketing data and reduce time
-                  spent on preparation. Focus on insights with our advanced
-                  marketing attribution software. Easily use and integrate your
-                  data anywhere with our connectors and APIs.
+                  Browse 40+ platforms — websites, social, ads, commerce, and
+                  more — then manage every connection from one tab. Add a
+                  source, preview the data, and it flows into every other
+                  module automatically.
                 </p>
               </div>
 
@@ -462,17 +474,17 @@ export default function HomePage() {
                   className="w-full mb-6 rounded-lg"
                 />
                 <h3 className="text-xl font-semibold mb-3">
-                  Connect to entire stack
+                  Audience Insights
                 </h3>
                 <p className="text-muted">
-                  Analyze and optimize customer journeys across all touchpoints.
-                  Our attribution software and budget optimizer saves time by
-                  sending optimizations directly to platforms.
+                  See who is actually engaging — demographics, geography, and
+                  activity timing per source. Panels only show what a source
+                  genuinely reports, so you never read a metric the platform
+                  does not measure.
                 </p>
               </div>
 
-              {/* Image Gallery Card (reference asks for illustrations.png —
-                  repaired to the real file name Illustrations.png) */}
+              {/* Image Gallery Card */}
               <div className="bg-surface p-8 rounded-2xl shadow-xs">
                 <div className="flex flex-col md:flex-row gap-4 mb-6">
                   <img
@@ -487,13 +499,12 @@ export default function HomePage() {
                   />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">
-                  Connect to entire slack
+                  Compare &amp; Performance
                 </h3>
                 <p className="text-muted">
-                  Automate the collection of all marketing data and reduce time
-                  spent on preparation. Focus on insights with our advanced
-                  marketing attribution software. Easily use and integrate your
-                  data anywhere with our connectors and APIs.
+                  Put platforms or periods next to each other, and keep an eye
+                  on paid channels: ad spend, subscribers, traffic sources, and
+                  report-ready performance summaries for every campaign.
                 </p>
               </div>
 
@@ -504,12 +515,13 @@ export default function HomePage() {
                   className="w-full mb-6 rounded-lg"
                 />
                 <h3 className="text-xl font-semibold mb-3">
-                  Connect to entire stack
+                  Reports &amp; Dashboard
                 </h3>
                 <p className="text-muted">
-                  Analyze and optimize customer journeys across all touchpoints.
-                  Our attribution software and budget optimizer saves time by
-                  sending optimizations directly to platforms.
+                  Build the dashboard your way with customizable widgets, then
+                  generate reports with an executive summary, key metrics,
+                  charts, and tables — ready to export and share with
+                  stakeholders.
                 </p>
               </div>
             </div>
@@ -579,13 +591,13 @@ export default function HomePage() {
                     ))}
                   </ul>
 
-                  {/* Action Button (inert in the reference) */}
-                  <button
-                    type="button"
-                    className={`w-full py-2 px-4 rounded-full text-center ${plan.buttonClass} hover:opacity-90 transition-opacity`}
+                  {/* Action Button */}
+                  <Link
+                    href="/register"
+                    className={`block w-full py-2 px-4 rounded-full text-center ${plan.buttonClass} hover:opacity-90 transition-opacity`}
                   >
                     Activate
-                  </button>
+                  </Link>
                 </div>
               ))}
             </div>
@@ -601,16 +613,16 @@ export default function HomePage() {
                 What Our Clients Say
               </h2>
               <p className="text-muted text-sm">
-                Connect all marketing data with our attribution platform to
-                boost ROI by 15-44%. Measure ROI across channels.
+                Teams use Metrispot to replace scattered exports with one
+                dashboard every stakeholder can open.
               </p>
             </div>
 
             {/* Testimonials Grid */}
             <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {testimonials.map((testimonial, index) => (
+              {testimonials.map((testimonial) => (
                 <div
-                  key={index}
+                  key={testimonial.name}
                   className="bg-gray-50 dark:bg-white/5 rounded-xl p-6 flex flex-col justify-between"
                 >
                   {/* Testimonial Text */}
@@ -620,10 +632,11 @@ export default function HomePage() {
                     </p>
                   </div>
 
-                  {/* Author Info — reference points at /path-to-imageN.jpg,
-                      which never exists (no broken image rendered here) */}
+                  {/* Author Info — initials avatar (no image asset needed) */}
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full overflow-hidden bg-gray-200 dark:bg-gray-700"></div>
+                    <div className="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-500/15 flex items-center justify-center text-orange-500 font-semibold shrink-0">
+                      {testimonial.initials}
+                    </div>
                     <div>
                       <h4 className="font-medium">{testimonial.name}</h4>
                       <p className="text-sm text-faint">
@@ -646,8 +659,8 @@ export default function HomePage() {
                 Frequently Asked Questions
               </h2>
               <p className="text-muted text-sm">
-                Connect all marketing data with our attribution platform to
-                boost ROI by 15-44%. Measure ROI across channels.
+                Everything you need to know about connecting sources and
+                reading your data in Metrispot.
               </p>
             </div>
 

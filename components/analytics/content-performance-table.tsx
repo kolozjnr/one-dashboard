@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useAnalytics } from "./analytics-context";
-import { EmptyState, SectionCard, TableSkeleton } from "./states";
+import { EmptyState, NoResultsState, SectionCard, TableSkeleton } from "./states";
 import {
   Table,
   TableBody,
@@ -199,14 +199,22 @@ export function ContentPerformanceTable() {
       {loading ? (
         <TableSkeleton rows={6} columns={Math.min(Math.max(columns.length, 4), 7)} />
       ) : columns.length === 0 || sorted.length === 0 ? (
-        <EmptyState
-          title={rows.length === 0 ? "No content for these sources" : "No matching content"}
-          description={
-            rows.length === 0
-              ? "The selected sources do not publish trackable content. Pick a social account to see its posts."
-              : "Try a different search term or clear the content type filter."
-          }
-        />
+        rows.length === 0 ? (
+          <EmptyState
+            title="No content for these sources"
+            description="The selected sources do not publish trackable content. Pick a social account to see its posts."
+          />
+        ) : (
+          <NoResultsState
+            title="No matching content"
+            description="No posts match the current search or filters. Clear them to see every post again."
+            onClear={() => {
+              setQuery("");
+              setPlatformFilter("all");
+              setTypeFilter("all");
+            }}
+          />
+        )
       ) : (
         <>
           <Table>
