@@ -1,15 +1,21 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import { seed } from "@/lib/admin/mocks/coupon";
 import type { Coupon } from "@/lib/admin/types/coupon";
 
 const plans=["Free","Starter","Professional","Business","Enterprise"];
 const blank=():Omit<Coupon,"id"|"used"|"redemptions">=>({name:"",code:"",description:"",type:"Percentage",value:10,plans:[],cycle:"Any",max:100,perUser:1,minimum:0,start:"",expiry:"",active:true});
 const isExpired=(c:Coupon,today:string)=>c.expiry<today;
+// Today's date is a browser value. Reading it through useSyncExternalStore keeps the
+// server render on a fixed sentinel so hydration stays deterministic, while the client
+// picks up the real date without a setState-in-effect cascading render.
+const subscribe=()=>()=>{};
+const readToday=()=>new Date().toISOString().slice(0,10);
+const readServerToday=()=>"1970-01-01";
 
 export default function Page(){
- const [today,setToday]=useState("1970-01-01");useEffect(()=>setToday(new Date().toISOString().slice(0,10)),[]);
+ const today=useSyncExternalStore(subscribe,readToday,readServerToday);
  const [coupons,setCoupons]=useState(seed);const [search,setSearch]=useState("");const [filter,setFilter]=useState("All coupons");const [form,setForm]=useState(false);const [editing,setEditing]=useState<Coupon|null>(null);const [data,setData]=useState<Omit<Coupon,"id"|"used"|"redemptions">>(blank());const [errors,setErrors]=useState<Record<string,string>>({});const [redemptions,setRedemptions]=useState<Coupon|null>(null);const [confirm,setConfirm]=useState<{coupon:Coupon;action:string}|null>(null);const [notice,setNotice]=useState("");
  const shown=useMemo(()=>coupons.filter(c=>(filter==="All coupons"||(filter==="Active"&&c.active&&!isExpired(c,today))||(filter==="Inactive"&&(!c.active||isExpired(c,today))))&&`${c.name} ${c.code}`.toLowerCase().includes(search.toLowerCase())),[coupons,filter,search,today]);
  const update=<K extends keyof typeof data>(key:K,value:typeof data[K])=>setData(old=>({...old,[key]:value}));

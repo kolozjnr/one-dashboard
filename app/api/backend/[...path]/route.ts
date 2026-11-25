@@ -1,6 +1,6 @@
 type BackendRouteContext = { params: Promise<{ path: string[] }> };
 
-const backendApiBase = (process.env.BACKEND_API_URL ?? "http://127.0.0.1:4000/api/v1").replace(/\/+$/, "");
+const backendApiBase = (process.env.BACKEND_API_URL ?? "http://127.0.0.1:4100/api/v1").replace(/\/+$/, "");
 const forwardedRequestHeaders = ["accept", "content-type", "cookie", "origin", "user-agent", "x-csrf-token"];
 const forwardedResponseHeaders = ["cache-control", "content-type", "retry-after", "x-request-id"];
 

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import { AppLogo } from "@/components/app-logo";
+import { isSocialProduct, startSocialAuthorization, type SocialProduct } from "@/lib/integrations/social";
 
 type Platform = { id: string; name: string; domain?: string };
 
@@ -231,8 +232,11 @@ export default function DataSourcePanel() {
         </PageButton>
       </nav>
 
-      {/* Connect modal — UI only, no backend */}
+      {/* Connect modal — Instagram/Facebook run the real Meta OAuth flow;
+          the remaining platforms are still placeholder connects. The key
+          remounts the modal per platform so connect state resets cleanly. */}
       <ConnectModal
+        key={modalPlatform?.id ?? "modal"}
         platform={modalPlatform}
         shown={modalShown}
         onClose={closeModal}
@@ -280,6 +284,8 @@ function ConnectModal({
   onClose: () => void;
 }) {
   const [websiteUrl, setWebsiteUrl] = useState("");
+  const [connecting, setConnecting] = useState(false);
+  const [connectError, setConnectError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!platform) return;
@@ -293,6 +299,37 @@ function ConnectModal({
   if (!platform) return null;
 
   const isWebsite = platform.id === "website";
+  // Instagram, Facebook, TikTok and X are real OAuth flows (see
+  // lib/integrations/social); every other platform still uses the placeholder.
+  const socialProduct: SocialProduct | null =
+    isSocialProduct(platform.id) && platform.id !== "tiktok_business" ? platform.id : null;
+
+  const handleConnect = async () => {
+    if (!socialProduct) {
+      onClose();
+      return;
+    }
+    setConnecting(true);
+    setConnectError(null);
+    try {
+      const url = await startSocialAuthorization(socialProduct);
+      window.location.assign(url);
+    } catch (error) {
+      setConnecting(false);
+      setConnectError(error instanceof Error ? error.message : "The connection could not be started.");
+    }
+  };
+
+  const socialCopy =
+    socialProduct === "instagram"
+      ? "Sign in with your Instagram professional account (Business or Creator) to grant read-only insights access. Personal accounts are not supported."
+      : socialProduct === "facebook"
+        ? "Sign in with Facebook to grant access to the Pages you manage. One login can connect multiple Pages."
+        : socialProduct === "tiktok"
+          ? "Sign in with TikTok for read-only access to your profile and videos. Impressions and reach are not part of the Display API — those need TikTok for Business."
+          : socialProduct === "x"
+            ? "Sign in with X for read-only access to your profile and posts, plus the metrics you are entitled to see."
+            : null;
 
   return (
     <div
@@ -321,7 +358,7 @@ function ConnectModal({
         <p className="text-sm text-faint mt-2">
           {isWebsite
             ? "Add your website URL to start tracking sessions, visitors and the most visited pages."
-            : `Authenticate your ${platform.name} account to grant access to your ${platform.name} page.`}
+            : (socialCopy ?? `Authenticate your ${platform.name} account to grant access to your ${platform.name} page.`)}
         </p>
 
         {isWebsite && (
@@ -335,23 +372,35 @@ function ConnectModal({
           />
         )}
 
+        {connectError && (
+          <p role="alert" className="mt-4 rounded-lg border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
+            {connectError}
+          </p>
+        )}
+
         <p className="mt-4 inline-flex items-center gap-2 rounded-full border border-line bg-sunken px-3 py-1.5 text-xs font-medium text-muted">
           <span className="w-1.5 h-1.5 rounded-full bg-brand" />
-          {isWebsite ? "Website connection coming soon" : "Social connection coming soon"}
+          {isWebsite
+            ? "Website connection coming soon"
+            : socialProduct
+              ? "Read-only insights access — disconnect anytime"
+              : "Social connection coming soon"}
         </p>
 
         <div className="mt-6 flex flex-col gap-2 sm:flex-row">
           <button
             type="button"
-            onClick={onClose}
-            className="flex-1 px-4 py-2.5 rounded-lg bg-brand hover:bg-brand-hover text-white text-sm font-medium transition-colors"
+            onClick={handleConnect}
+            disabled={connecting}
+            className="flex-1 px-4 py-2.5 rounded-lg bg-brand hover:bg-brand-hover text-white text-sm font-medium transition-colors disabled:opacity-60"
           >
-            Connect
+            {connecting ? "Redirecting…" : "Connect"}
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="flex-1 px-4 py-2.5 rounded-lg border border-line text-muted hover:bg-sunken text-sm font-medium transition-colors"
+            disabled={connecting}
+            className="flex-1 px-4 py-2.5 rounded-lg border border-line text-muted hover:bg-sunken text-sm font-medium transition-colors disabled:opacity-60"
           >
             Cancel
           </button>

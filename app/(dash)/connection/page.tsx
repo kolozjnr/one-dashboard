@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { SocialConnections } from "@/components/connection/social-connections";
 import ConnectionTabs from "./connection-tabs";
 
 export const metadata: Metadata = {
@@ -43,6 +44,9 @@ export default function ConnectionPage() {
           Add new
         </button>
       </div>
+
+      {/* Connected social (Instagram / Facebook / TikTok / X) accounts — real OAuth */}
+      <SocialConnections />
 
       {/* Navigation Tabs + panel (Sources empty state / Destination cards) */}
       <ConnectionTabs />

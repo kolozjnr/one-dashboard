@@ -16,6 +16,7 @@ import { AuditModule } from './modules/audit/audit.module';
 import { BillingModule } from './modules/billing/billing.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { IntegrationsModule } from './modules/integrations/integrations.module';
 
 @Module({
   imports: [
@@ -25,7 +26,10 @@ import { AdminModule } from './modules/admin/admin.module';
         NODE_ENV: Joi.string()
           .valid('development', 'test', 'production')
           .default('development'),
-        PORT: Joi.number().port().default(4000),
+        // 4100, not 4000: Windows reserves TCP 3985-4084 (Hyper-V/WinNAT
+        // excluded port range) on many machines, where binding fails with
+        // EACCES before any request is served. Keep the default outside it.
+        PORT: Joi.number().port().default(4100),
         APP_VERSION: Joi.string().default('0.1.0'),
         APP_BASE_URL: Joi.string().uri({ scheme: ['http', 'https'] }).required(),
         JWT_SECRET: Joi.string().min(32).required(),
@@ -47,6 +51,36 @@ import { AdminModule } from './modules/admin/admin.module';
         // Optional: encrypts gateway secrets at rest. When absent the key is derived
         // from JWT_SECRET (see SecretVaultService), so credentials are never plaintext.
         PAYMENT_ENCRYPTION_KEY: Joi.string().min(16).optional(),
+        // Meta OAuth integrations (all optional; endpoints report NOT_CONFIGURED
+        // until the flow you want is set up. Empty strings are treated as unset —
+        // see backend/docs/meta-integrations.md).
+        META_APP_ID: Joi.string().allow('').optional(),
+        META_APP_SECRET: Joi.string().allow('').optional(),
+        META_REDIRECT_URI: Joi.string().uri({ scheme: ['http', 'https'] }).allow('').optional(),
+        META_INSTAGRAM_APP_ID: Joi.string().allow('').optional(),
+        META_INSTAGRAM_APP_SECRET: Joi.string().allow('').optional(),
+        META_INSTAGRAM_REDIRECT_URI: Joi.string().uri({ scheme: ['http', 'https'] }).allow('').optional(),
+        // TikTok Login Kit + Display API (optional; see backend/docs/social-integrations.md)
+        TIKTOK_CLIENT_KEY: Joi.string().allow('').optional(),
+        TIKTOK_CLIENT_SECRET: Joi.string().allow('').optional(),
+        TIKTOK_REDIRECT_URI: Joi.string().uri({ scheme: ['http', 'https'] }).allow('').optional(),
+        // TikTok API for Business — a separate, separately gated product
+        TIKTOK_BUSINESS_APP_ID: Joi.string().allow('').optional(),
+        TIKTOK_BUSINESS_SECRET: Joi.string().allow('').optional(),
+        TIKTOK_BUSINESS_REDIRECT_URI: Joi.string().uri({ scheme: ['http', 'https'] }).allow('').optional(),
+        // X OAuth 2.0 (PKCE); the consumer pair below is the OAuth 1.0a strategy
+        X_CLIENT_ID: Joi.string().allow('').optional(),
+        X_CLIENT_SECRET: Joi.string().allow('').optional(),
+        X_REDIRECT_URI: Joi.string().uri({ scheme: ['http', 'https'] }).allow('').optional(),
+        X_CONSUMER_KEY: Joi.string().allow('').optional(),
+        X_SECRET_KEY: Joi.string().allow('').optional(),
+        // App-only bearer: never used for user-authorized reads (documented)
+        X_BEARER_TOKEN: Joi.string().allow('').optional(),
+        X_OAUTH1_ACCESS_TOKEN: Joi.string().allow('').optional(),
+        X_OAUTH1_ACCESS_SECRET: Joi.string().allow('').optional(),
+        // Optional: separate AES-256-GCM key for OAuth tokens at rest
+        // (falls back to PAYMENT_ENCRYPTION_KEY, then JWT_SECRET derivation).
+        INTEGRATIONS_ENCRYPTION_KEY: Joi.string().min(16).allow('').optional(),
       }),
       validationOptions: {
         allowUnknown: true,
@@ -81,6 +115,7 @@ import { AdminModule } from './modules/admin/admin.module';
     PaymentsModule,
     WorkspacesModule,
     AdminModule,
+    IntegrationsModule,
     HealthModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

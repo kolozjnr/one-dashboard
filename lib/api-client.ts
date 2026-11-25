@@ -24,14 +24,31 @@ let csrfToken: string | null = null;
 
 async function readCsrfToken(): Promise<string> {
   if (csrfToken) return csrfToken;
-  const response = await fetch("/api/backend/auth/csrf", {
-    credentials: "same-origin",
-    cache: "no-store",
-  });
+  let response: Response;
+  try {
+    response = await fetch("/api/backend/auth/csrf", {
+      credentials: "same-origin",
+      cache: "no-store",
+    });
+  } catch {
+    throw new ApiClientError(
+      "Could not reach the API service. Check that it is running.",
+      "BACKEND_UNAVAILABLE",
+      0,
+    );
+  }
   const body = (await response.json().catch(() => null)) as ApiEnvelope<{ csrfToken: string }> | null;
   const token = body?.data?.csrfToken;
   if (!response.ok || !token) {
-    throw new ApiClientError("Could not start a secure session.", "CSRF_INIT_FAILED", response.status);
+    // Surface the proxy's own reason when it has one — a stopped backend
+    // answers 502 BACKEND_UNAVAILABLE, which is not a session problem and
+    // must not be reported as one.
+    const code = body?.error?.code ?? "CSRF_INIT_FAILED";
+    const message =
+      code === "BACKEND_UNAVAILABLE"
+        ? "The API service is not running. Start it from the backend folder with npm run start:dev."
+        : "Could not start a secure session.";
+    throw new ApiClientError(message, code, response.status);
   }
   csrfToken = token;
   return token;

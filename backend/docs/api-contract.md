@@ -64,4 +64,18 @@ On a verified successful payment for a pending subscription, one transaction mar
 
 The confirmation queue is intentionally best-effort: the in-app `Notification` row is written first and is the durable record, so a broker problem never fails a payment (the enqueue is caught and logged as a warning). BullMQ requires **Redis ≥ 5.0** for the `notifications` queue and its worker; on older brokers the API still runs and in-app confirmations still appear, but the queued email leg stays undelivered until the broker is upgraded.
 
+## Integrations (Meta OAuth)
+
+Controllers speak only to `IntegrationsService`; only the adapters in `src/modules/integrations/` know Meta host names, endpoint paths or scope names. Instagram and Facebook are separate API products with **separate permission sets** (`instagram_business_*` vs `pages_show_list`/`pages_read_engagement`/`read_insights`) that are never combined — see `docs/meta-integrations.md` for the verified flows, account-type eligibility and metric availability rules.
+
+| Route | Permission | Purpose |
+| --- | --- | --- |
+| `GET /workspaces/:workspaceId/integrations` | `integrations.view` | Connected Meta accounts (status, granted scopes, token expiry, linked IG account) plus which products are configured. Never returns tokens. |
+| `POST /workspaces/:workspaceId/integrations/authorize` | `integrations.connect` | Body `{ "product": "instagram" \| "facebook" }`; returns the Meta authorization URL carrying a signed `state`. |
+| `GET /integrations/meta/callback` | `@Public()` | Meta's redirect target, reached via the Next.js route `{APP_BASE_URL}/auth/meta/callback`. Validates the signed state, exchanges the code, upgrades to a long-lived token, seals it, discovers accounts (professional IG account / one row per Facebook Page) and returns the page to redirect to. The browser never sees a token. |
+| `GET /workspaces/:workspaceId/integrations/:accountId/insights` | `analytics.view` | Fetches supported metrics for the range (`?since&until&metrics`, clamped to 90 days), persists successes to `AnalyticsSnapshot` + `AccountMetricCapability` and a `SyncJob`, and reports per-metric `unsupported` reasons instead of failing the sync. |
+| `POST /workspaces/:workspaceId/integrations/:accountId/disconnect` | `integrations.disconnect` | Marks `DISCONNECTED`, soft-deletes the row, **destroys the ciphertext** and writes an audit entry. |
+
+Tokens are AES-256-GCM sealed (`INTEGRATIONS_ENCRYPTION_KEY`, falling back to `PAYMENT_ENCRYPTION_KEY`/`JWT_SECRET` derivation) in `ConnectedAccount.credentialsCiphertext`, refreshed where Meta supports it (Instagram `ig_refresh_token`, Facebook `fb_exchange_token`), and never logged — the Graph client redacts token/secret material from every error message. Revoked permissions move the account to `NEEDS_REAUTH`; connect/disconnect actions are recorded in `AuditLog`.
+
 `GET /api/v1/health` returns the app version and only `ok`/`unavailable` dependency states. `/docs` serves the generated OpenAPI document and UI.

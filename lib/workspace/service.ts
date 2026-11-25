@@ -27,6 +27,8 @@ export const workspaceService = {
   refresh: reload,
   getSnapshot: () => workspace,
   getServerSnapshot: () => initialWorkspace,
+  /** Current workspace id ("" until initialize() resolves). */
+  getId: () => workspaceId,
   subscribe(listener: () => void) { listeners.add(listener); return () => listeners.delete(listener); },
   getRoles: () => roles,
   async invite(name: string, email: string, role: WorkspaceRole, message?: string) {

@@ -89,7 +89,7 @@ Several screens allow interaction against local component state or in-memory sam
 
 - Payments, refunds, and payment verification do not call a payment gateway or move money.
 - Email template editing and workspace invitations do not send email.
-- Integration enablement does not perform OAuth or connect a social account.
+- Integration enablement in the admin area does not perform OAuth. Instagram and Facebook connections started from the Data Source picker or the Connections page do run real Meta OAuth (signed state, encrypted tokens, scope tracking — see `backend/docs/meta-integrations.md`); the remaining platforms are still placeholders.
 - Subscription activation and changes do not enforce billing or grant real entitlements.
 - Role and permission screens are presentation and mock controls; they do not authorize server requests.
 - Branding uploads are local previews and do not upload assets.
@@ -116,6 +116,6 @@ The application uses React 19, Next.js 16, TypeScript, and Tailwind CSS 4. Chart
 2. Replace `lib/admin/services.ts` and `lib/workspace/service.ts` mock behavior with typed HTTP calls, including loading, empty, and error states.
 3. Implement secure authentication and server-side authorization; enforce workspace roles and administrator permissions at the API.
 4. Integrate payment provider webhooks and derive subscription status from verified server events.
-5. Add OAuth flows and scheduled/provider-driven data synchronization for supported platforms.
+5. Add OAuth flows and scheduled/provider-driven data synchronization for supported platforms. Meta (Instagram + Facebook) OAuth is implemented — see `backend/docs/meta-integrations.md`; next are the remaining providers and scheduled sync jobs.
 6. Store email templates, branding assets, audit events, and user preferences persistently.
 7. Add automated tests for service methods, critical workflows, accessibility, and responsive behavior.
